@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Characters, Planets, Starships
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required,JWTManager
 
 #from models import Person
@@ -109,44 +109,59 @@ def handle_signup():
 
     return jsonify(payload), 200
 
+# get all characters
 @app.route('/characters', methods=['GET'])
-def get_characters():
-   characters = characters.query.all()
-   serialChars = []
-   for character in characters:
-    serialChars.append(character)
+def getAllCharacters():
+  characters = Characters.query.all()
+  if characters is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=[character.serialize() for character in characters]) 
 
-    response_body = {
-        "characters": serialChars
-    }
+# get one Character
+@app.route('/characters/<int:id>', methods=['GET'])
+def getOneCharacters(id):
+  character = Characters.query.get(id)
+  if character is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=character.serialize())
 
-    return jsonify(response_body), 200
-
+# get all planets
 @app.route('/planets', methods=['GET'])
-def get_planets():
-   planets = planets.query.all()
-   serialPlans = []
-   for planet in planets:
-    serialPlans.append(planet)
+def getAllPlanets():
+  planets = Planets.query.all()
+  if planets is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=[planet.serialize() for planet in planets]) 
 
-    response_body = {
-        "planets": serialPlans
-    }
+# get one planet
+@app.route('/planets/<int:id>', methods=['GET'])
+def getOnePlanet(id):
+  planet = Planets.query.get(id)
+  if planet is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=planet.serialize())
 
-    return jsonify(response_body), 200
-
+# get all starships
 @app.route('/starships', methods=['GET'])
-def get_starships():
-   starships = starships.query.all()
-   serialStars = []
-   for starship in starships:
-    serialStars.append(starship)
+def getAllStarships():
+  starships = Starships.query.all()
+  if starships is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=[starship.serialize() for starship in starships]) 
 
-    response_body = {
-        "starships": serialStars
-    }
-
-    return jsonify(response_body), 200
+# get one starship
+@app.route('/starships/<int:id>', methods=['GET'])
+def getOneStarships(id):
+  starship = Starship.query.get(id)
+  if starship is None:
+    return jsonify(msg="This page does not exist")
+  else:
+    return jsonify(data=starship.serialize())
 
 
 # this only runs if `$ python src/app.py` is executed
